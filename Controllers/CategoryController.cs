@@ -17,5 +17,27 @@ namespace WebBanSach.Controllers
             IEnumerable<Category> objCategoryList = _db.Categories.ToList();
             return View(objCategoryList);
         }
+        public IActionResult Create()
+        {
+            
+            return View();
+        }
+        //post
+        [HttpPost]
+        [ValidateAntiForgeryToken]// chong hacker gia mao phuong thuc post
+        public IActionResult Create(Category obj)
+        {
+            if(obj.Name == obj.DisplayOrder.ToString())
+            {
+                ModelState.AddModelError("CustomError", "The Name must not same Display Order");
+            }
+            if (ModelState.IsValid)
+            {
+                _db.Categories.Add(obj);
+                _db.SaveChanges();
+                return RedirectToAction("index");
+            }
+            return View(obj);
+        }
     }
 }
